@@ -1,16 +1,14 @@
-import os
-import platform
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
+import os
+import platform
 
 def get_browser_binary():
-    """Detecta automaticamente o sistema operacional e o navegador instalado, e retorna o caminho."""
-    # Obtém o sistema operacional atual
+    """Detects the installed browser and returns its path."""
     current_os = platform.system()
 
-    # Defina os caminhos dos navegadores para cada sistema operacional
     if current_os == "Darwin":  # macOS
         possible_browsers = {
             "Brave": "/Applications/Brave Browser.app/Contents/MacOS/Brave Browser",
@@ -20,38 +18,38 @@ def get_browser_binary():
     elif current_os == "Linux":  # Linux
         possible_browsers = {
             "Brave": "/usr/bin/brave",
-            "Arc": "/usr/bin/arc",  # Ajuste conforme o caminho correto do Arc
+            "Arc": "/usr/bin/arc",  # Ensure correct path for Arc
             "Chrome": "/usr/bin/google-chrome"
         }
     elif current_os == "Windows":  # Windows
         possible_browsers = {
             "Brave": "C:\\Program Files\\Brave Software\\Brave-Browser\\Application\\brave.exe",
-            "Arc": "C:\\Program Files\\Arc\\Arc.exe",  # Ajuste conforme o caminho do Arc no Windows
+            "Arc": "C:\\Program Files\\Arc\\Arc.exe",  # Ensure correct path for Arc
             "Chrome": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"
         }
     else:
-        raise OSError(f"Sistema operacional não suportado: {current_os}")
+        raise OSError(f"Unsupported OS: {current_os}")
 
-    # Verifica se algum dos navegadores está instalado no sistema
+    # Check for installed browser
     for browser, path in possible_browsers.items():
         if os.path.exists(path):
-            print(f"{browser} encontrado: {path}")
-            return path  # Retorna o caminho do primeiro navegador encontrado
+            print(f"{browser} found at {path}")
+            return path  # Return the first found browser path
 
-    # Se nenhum navegador for encontrado, levanta um erro
-    raise FileNotFoundError("Nenhum navegador baseado em Chromium encontrado.")
+    # Raise error if no compatible browser is found
+    raise FileNotFoundError("No compatible Chromium-based browser found.")
 
 def setup_driver():
-    """Configura o WebDriver para o navegador detectado."""
+    """Sets up the WebDriver with the appropriate browser configuration."""
     chrome_options = Options()
 
-    # Obtém o caminho do navegador instalado
+    # Get the correct browser binary based on the OS
     browser_binary = get_browser_binary()
     
-    # Configura o caminho do navegador no Selenium
+    # Configure the browser path for Selenium
     chrome_options.binary_location = browser_binary
 
-    # Inicializa o WebDriver
+    # Use webdriver-manager to automatically fetch the correct ChromeDriver version
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
 
     return driver

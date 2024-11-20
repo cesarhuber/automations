@@ -1,12 +1,13 @@
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import TimeoutException, NoSuchElementException
+from utils.browser_config import setup_driver
 import tkinter as tk
 import threading
 import time
 
+# Importações do Selenium
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException, NoSuchElementException
 
 class BlingAutomation:
     def __init__(self):
@@ -14,9 +15,7 @@ class BlingAutomation:
 
     def init_browser(self):
         """Inicializa o navegador com as configurações necessárias."""
-        options = webdriver.ChromeOptions()
-        options.add_argument("--start-maximized")  # Abrir o navegador em tela cheia
-        self.driver = webdriver.Chrome(options=options)
+        self.driver = setup_driver()
 
     def open_login_page(self):
         """Abre a página de login do Bling para o usuário fazer o login manualmente."""
@@ -41,11 +40,11 @@ class BlingAutomation:
                 print("Nenhum prompt encontrado.")
 
             # Interage com o elemento desejado
-            caixa_texto = self.driver.find_element(By.XPATH, '//*[@id="itemCode"]')
-            caixa_texto.click()
+            text_box = self.driver.find_element(By.XPATH, '//*[@id="itemCode"]')
+            text_box.click()
             print("Caixa de texto encontrada e selecionada.")
         except TimeoutException:
-            print("Erro: Não foi possível carregar a tela ou encontrar a caixa de texto.")
+            print("Erro: Não foi possível carregar a página ou encontrar a caixa de texto.")
         except Exception as e:
             print("Erro inesperado:", e)
 

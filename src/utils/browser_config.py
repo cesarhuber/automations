@@ -2,7 +2,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
-from webdriver_manager.core.utils import ChromeType
+from webdriver_manager.utils import ChromeType  # Correct import path for ChromeType
 import os
 import platform
 
@@ -19,25 +19,23 @@ def get_browser_binary():
     elif current_os == "Linux":  # Linux
         possible_browsers = {
             "Brave": "/usr/bin/brave",
-            "Arc": "/usr/bin/arc",  # Ensure correct path for Arc
+            "Arc": "/usr/bin/arc",
             "Chrome": "/usr/bin/google-chrome"
         }
     elif current_os == "Windows":  # Windows
         possible_browsers = {
             "Brave": "C:\\Program Files\\Brave Software\\Brave-Browser\\Application\\brave.exe",
-            "Arc": "C:\\Program Files\\Arc\\Arc.exe",  # Ensure correct path for Arc
+            "Arc": "C:\\Program Files\\Arc\\Arc.exe",
             "Chrome": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"
         }
     else:
         raise OSError(f"Unsupported OS: {current_os}")
 
-    # Check for installed browser
     for browser, path in possible_browsers.items():
         if os.path.exists(path):
             print(f"{browser} found at {path}")
-            return path  # Return the first found browser path
+            return path
 
-    # Raise error if no compatible browser is found
     raise FileNotFoundError("No compatible Chromium-based browser found.")
 
 def setup_driver():
@@ -46,12 +44,9 @@ def setup_driver():
 
     # Get the correct browser binary based on the OS
     browser_binary = get_browser_binary()
-    
-    # Configure the browser path for Selenium
     chrome_options.binary_location = browser_binary
 
-    # Use webdriver-manager to automatically fetch the correct ChromeDriver version
-    # Force webdriver-manager to use the latest compatible ChromeDriver version
+    # Use webdriver-manager to automatically fetch the correct ChromeDriver version for Brave
     driver = webdriver.Chrome(service=Service(ChromeDriverManager(chrome_type=ChromeType.BRAVE).install()), options=chrome_options)
 
     return driver

@@ -2,6 +2,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
+from webdriver_manager.core.utils import ChromeType
 import os
 import platform
 
@@ -50,6 +51,7 @@ def setup_driver():
     chrome_options.binary_location = browser_binary
 
     # Use webdriver-manager to automatically fetch the correct ChromeDriver version
-    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
+    # Force webdriver-manager to use the latest compatible ChromeDriver version
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager(chrome_type=ChromeType.BRAVE).install()), options=chrome_options)
 
     return driver
